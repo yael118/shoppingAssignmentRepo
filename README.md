@@ -31,23 +31,40 @@ SQL Server or LocalDB
 MongoDB 
 
 ###Installation and Setup
-1. Clone the Project
+####1. Clone the Project
+
 bashgit clone https://github.com/yael118/shoppingAssignmentRepo.git
+
 cd shopping-system
-2. Local Installation
-Client (React + Redux)
+####2. Local Installation
+####Client (React + Redux)
+
 bashcd client
+
 npm install
+
 npm start
+
 The client will be available at: http://localhost:3000
-Products API (.NET 8)
+
+####Products API (.NET 8)
+
 bashcd products-api
+
 dotnet restore
+
 dotnet ef database update
+
 dotnet run
+
 The API will be available at: https://localhost:7001
-Orders API (Node.js)
+
+####Orders API (Node.js)
+
 bashcd orders-api
+
 npm install
+
 npm run dev
+
 The API will be available at: https://localhost:3001
