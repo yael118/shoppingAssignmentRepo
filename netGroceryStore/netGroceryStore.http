@@ -1,0 +1,4 @@
+@netGroceryStore_HostAddress = http://localhost:7001
+ GET {{netGroceryStore_HostAddress}}/Categories/ Accept: application/json
+
+###
