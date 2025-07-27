@@ -1,84 +1,88 @@
-# Three-Tier Shopping System
-#A comprehensive shopping system built with three main components:
+# 🛒 Three-Tier Shopping System
 
-##Client-side with React + Redux Toolkit
-##Main API with .NET 8 for managing categories and products
-##Orders API with Node.js for order management
+A comprehensive shopping system built with three main components:
 
-###System Architecture
-####Component 1: Client Side
+[📄 View Full Architecture Diagram](HelperFiles/architecture.html) 
 
-Technologies: React + Redux Toolkit
-Screens: First screen (product list) + Second screen (order summary)
-
-####Component 2: Products API (.NET 8)
-
-Technology: .NET 8
-Database: SQL Server + Entity Framework
-Role: Managing categories and products
-
-####Component 3: Orders API (Node.js)
-
-Technologies: Node.js Express
-Database: MongoDB
-Role: Order management and customer data storage
-
-###System Requirements
-
-Node.js 18+
-.NET 8 SDK
-SQL Server or LocalDB
-MongoDB 
-
-###Installation and Setup
-
-# Grocery Store Multi-Project Setup Guide
-
-This repository contains three main components:
-- **.NET Core 8 API** (`netGroceryStore`)
-- **Node.js API** (`nodeGroceryStore`)
-- **React Frontend** (`react-grocery-store`)
-
-Follow the steps below to set up and run the entire solution.
+- **Client-side:** React + Redux Toolkit  
+- **Main API:** .NET 8 (managing categories and products)  
+- **Orders API:** Node.js (order management)
 
 ---
 
-## ✅ 1. Clone the Repository
-Clone the main repository to your local machine:
+## 📑 Table of Contents
+1. [System Architecture](#-system-architecture)
+2. [Prerequisites](#-prerequisites)
+3. [Installation and Setup](#-installation-and-setup)
+    - [1. Clone the Repository](#-1-clone-the-repository)
+    - [2. Create Local Database](#-2-create-local-database-from-sql-file)
+    - [3. Update Connection String](#-3-update-connection-string)
+    - [4. Create .NET Core 8 Project](#-4-create-a-new-net-core-8-project)
+    - [5. Run .NET Core API](#-5-run-the-net-core-api)
+    - [6. Start Node.js API](#-6-start-the-nodejs-api)
+    - [7. Start React App](#-7-start-the-react-app)
+    - [8. Verify Everything is Running](#-8-verify-everything-is-running)
+
+---
+
+## 🏗 System Architecture
+
+- **Frontend (React)**  
+  - Technologies: React + Redux Toolkit  
+  - Screens: Product list, Order summary  
+
+- **Products API (.NET 8)**  
+  - Technologies: .NET 8 + EF Core  
+  - Database: SQL Server  
+  - Role: Managing categories and products  
+
+- **Orders API (Node.js)**  
+  - Technologies: Node.js + Express  
+  - Database: MongoDB  
+  - Role: Order management and customer data  
+
+---
+
+## ✅ Prerequisites
+- [Node.js 18+](https://nodejs.org/)
+- [.NET 8 SDK](https://dotnet.microsoft.com/)
+- SQL Server or LocalDB
+- MongoDB
+
+---
+
+## ⚙ Installation and Setup
+
+### ✅ 1. Clone the Repository
 ```bash
 git clone https://github.com/yael118/shoppingAssignmentRepo.git
 ```
 
 ---
 
-## ✅ 2. Create Local Database from SQL File
-Navigate to the `HelperFiles` folder and locate the SQL script provided.  
-Use **SQL Server Management Studio (SSMS)** to create the database:
-
-- Open SSMS and connect to your local SQL Server instance.
+### ✅ 2. Create Local Database from SQL File
+- Navigate to the `HelperFiles` folder.
+- Open **SQL Server Management Studio (SSMS)**.
 - Create a new database (e.g., `SHOPPINGDB`).
-- Run the SQL script from the `HelperFiles` folder to populate the database.
+- Run the provided SQL script to populate the database.
 
 ---
 
-## ✅ 3. Update Connection String
-Open the `appsettings.json` file inside the `netGroceryStore` folder and update the `DefaultConnection` string with your local SQL Server details:
+### ✅ 3. Update Connection String
+Edit `appsettings.json` in `netGroceryStore`:
 ```json
 "DefaultConnection": "Server=localhost\\<YOUR_INSTANCE>;Database=SHOPPINGDB;Trusted_Connection=true;MultipleActiveResultSets=true;TrustServerCertificate=True"
 ```
 
 ---
 
-## ✅ 4. Create a New .NET Core 8 Project
-Create a new empty **.NET Core 8 Web API project**:
+### ✅ 4. Create a New .NET Core 8 Project
 ```bash
 dotnet new webapi -n netGroceryStoreApp
 ```
+Replace files with content from `netGroceryStore` and update `appsettings.json`.
 
-Replace the generated files with the content from the `netGroceryStore` folder in this repository.  
-Make sure `appsettings.json` is updated as described in the previous step.
-
-Restore and build the project:
+Restore and build:
 ```bash
 cd netGroceryStoreApp
 dotnet restore
@@ -87,61 +91,36 @@ dotnet build
 
 ---
 
-## ✅ 5. Run the .NET Core API
-Run the project in **HTTPS mode** on **port 7001**:
+### ✅ 5. Run the .NET Core API
 ```bash
 dotnet run --urls "https://localhost:7001"
 ```
 
 ---
 
-## ✅ 6. Start the Node.js API
-Navigate to the `nodeGroceryStore` folder:
+### ✅ 6. Start the Node.js API
 ```bash
 cd ../nodeGroceryStore
-```
-
-Install dependencies:
-```bash
 npm install
-```
-
-Start the server:
-```bash
 node server.js
 ```
 
-The API should run on **port 3001**.
-
 ---
 
-## ✅ 7. Start the React App
-Navigate to the React project:
+### ✅ 7. Start the React App
 ```bash
 cd ../react-grocery-store
-```
-
-Install dependencies:
-```bash
 npm install
-```
-
-Start the app:
-```bash
 npm start
 ```
 
-The React app should run on **port 3000**.
-
 ---
 
-## ✅ 8. Verify Everything is Running
-Open your browser and navigate to:
+### ✅ 8. Verify Everything is Running
+Open:
 ```
 https://localhost:3000
 ```
-
 You should see the grocery shopping interface.
 
 ---
-

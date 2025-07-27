@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ארכיטקטורת ענן - מערכת הזמנות (גרסה להדפסה)</title>
+    <style>
+        @media print {
+            body {
+                background: white !important;
+                -webkit-print-color-adjust: exact;
+                color-adjust: exact;
+                margin: 0.5in;
+            }
+            
+            .no-print {
+                display: none !important;
+            }
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: white;
+            margin: 0;
+            padding: 15px;
+            color: #000;
+            line-height: 1.4;
+        }
+        
+        .architecture-container {
+            max-width: 100%;
+            margin: 0 auto;
+            direction: rtl;
+        }
+        
+        .title {
+            text-align: center;
+            color: #000;
+            font-size: 24px;
+            margin: 10px 0 20px 0;
+            font-weight: bold;
+            border-bottom: 3px solid #000;
+            padding-bottom: 10px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #333;
+            font-size: 14px;
+            margin-bottom: 25px;
+            font-style: italic;
+        }
+        
+        .layer {
+            margin-bottom: 25px;
+            position: relative;
+            page-break-inside: avoid;
+        }
+        
+        .layer-title {
+            background: #f0f0f0;
+            color: #000;
+            padding: 8px 15px;
+            border: 2px solid #000;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 16px;
+        }
+        
+        .components {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .component {
+            background: white;
+            border: 2px solid #000;
+            padding: 12px;
+            text-align: center;
+            min-width: 140px;
+            max-width: 200px;
+            position: relative;
+        }
+        
+        .component-title {
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 6px;
+            text-decoration: underline;
+        }
+        
+        .component-desc {
+            font-size: 11px;
+            color: #333;
+            line-height: 1.3;
+        }
+        
+        /* Patterns for different types (print-friendly) */
+        .frontend { 
+            border-style: solid;
+            background: repeating-linear-gradient(45deg, transparent, transparent 3px, #f9f9f9 3px, #f9f9f9 6px);
+        }
+        .api { 
+            border-style: dashed;
+            background: #f5f5f5;
+        }
+        .database { 
+            border-style: double;
+            border-width: 3px;
+            background: #fafafa;
+        }
+        .infrastructure { 
+            border-style: dotted;
+            border-width: 3px;
+            background: white;
+        }
+        .security { 
+            border-style: solid;
+            background: repeating-linear-gradient(0deg, transparent, transparent 2px, #f8f8f8 2px, #f8f8f8 4px);
+        }
+        .automation {
+            border-style: solid;
+            border-width: 3px;
+            background: repeating-linear-gradient(90deg, transparent, transparent 4px, #e8f4f8 4px, #e8f4f8 8px);
+        }
+        
+        /* Arrows - simplified for print */
+        .arrow {
+            text-align: center;
+            color: #000;
+            font-size: 20px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        .vpc-container {
+            border: 3px dashed #000;
+            padding: 15px;
+            margin: 15px 0;
+            background: #fafafa;
+            position: relative;
+        }
+        
+        .vpc-label {
+            position: absolute;
+            top: -12px;
+            right: 15px;
+            background: white;
+            color: #000;
+            padding: 3px 10px;
+            font-weight: bold;
+            border: 2px solid #000;
+            font-size: 12px;
+        }
+        
+        .flow-section {
+            background: #f8f8f8;
+            border: 2px solid #000;
+            padding: 15px;
+            margin: 20px 0;
+            page-break-inside: avoid;
+        }
+        
+        .flow-title {
+            color: #000;
+            font-weight: bold;
+            margin-bottom: 12px;
+            text-align: center;
+            font-size: 16px;
+            text-decoration: underline;
+        }
+        
+        .flow-steps {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 10px 0;
+        }
+        
+        .flow-step {
+            background: white;
+            border: 1px solid #000;
+            padding: 8px 10px;
+            font-size: 11px;
+            text-align: center;
+            min-width: 100px;
+            position: relative;
+        }
+        
+        .flow-step:not(:last-child)::after {
+            content: '←';
+            position: absolute;
+            left: -12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #000;
+            font-size: 16px;
+            font-weight: bold;
+            background: white;
+            padding: 0 2px;
+        }
+        
+        .legend {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+            page-break-inside: avoid;
+            border: 2px solid #000;
+            padding: 15px;
+            background: #f9f9f9;
+        }
+        
+        .legend-title {
+            grid-column: 1 / -1;
+            text-align: center;
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 10px;
+            text-decoration: underline;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+        }
+        
+        .legend-pattern {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #000;
+            flex-shrink: 0;
+        }
+        
+        .pattern-frontend {
+            background: repeating-linear-gradient(45deg, transparent, transparent 2px, #ccc 2px, #ccc 4px);
+        }
+        
+        .pattern-api {
+            border-style: dashed;
+            background: #e0e0e0;
+        }
+        
+        .pattern-database {
+            border-style: double;
+            border-width: 3px;
+            background: #f0f0f0;
+        }
+        
+        .pattern-infrastructure {
+            border-style: dotted;
+            border-width: 3px;
+        }
+        
+        .pattern-security {
+            background: repeating-linear-gradient(0deg, transparent, transparent 1px, #ddd 1px, #ddd 2px);
+        }
+        
+        .pattern-automation {
+            border-width: 3px;
+            background: repeating-linear-gradient(90deg, transparent, transparent 2px, #b3d9e6 2px, #b3d9e6 4px);
+        }
+        
+        .key-points {
+            margin-top: 25px;
+            border: 2px solid #000;
+            padding: 15px;
+            background: #f9f9f9;
+            page-break-inside: avoid;
+        }
+        
+        .key-points h3 {
+            margin: 0 0 10px 0;
+            font-size: 14px;
+            text-decoration: underline;
+        }
+        
+        .key-points ul {
+            margin: 0;
+            padding-right: 20px;
+            font-size: 12px;
+        }
+        
+        .key-points li {
+            margin-bottom: 4px;
+        }
+        
+        @media (max-width: 768px) {
+            .components {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .flow-steps {
+                flex-direction: column;
+            }
+            
+            .flow-step:not(:last-child)::after {
+                content: '↑';
+                left: 50%;
+                top: -10px;
+                transform: translateX(-50%);
+            }
+            
+            .legend {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .page-break {
+            page-break-before: always;
+        }
+        
+        .devops-section {
+            margin: 25px 0;
+            page-break-inside: avoid;
+        }
+    </style>
+</head>
+<body>
+    <div class="architecture-container">
+        <h1 class="title">ארכיטקטורת ענן AWS - מערכת הזמנות מוצרים</h1>
+        
+        <!-- User Layer -->
+        <div class="layer">
+            <div class="layer-title">שכבת משתמשים</div>
+            <div class="components">
+                <div class="component frontend">
+                    <div class="component-title">👤 משתמש קצה</div>
+                    <div class="component-desc">דפדפן אינטרנט<br>מחשב אישי / סמארטפון<br>גישה דרך HTTPS</div>
+                </div>
+            </div>
+            <div class="arrow">↓</div>
+        </div>
+        
+        <!-- CDN Layer -->
+        <div class="layer">
+            <div class="layer-title">שכבת הפצת תוכן (CDN)</div>
+            <div class="components">
+                <div class="component frontend">
+                    <div class="component-title">🌐 Amazon CloudFront</div>
+                    <div class="component-desc">רשת הפצה גלובלית<br>זמן תגובה מהיר<br>הגנת DDoS</div>
+                </div>
+                <div class="component frontend">
+                    <div class="component-title">📦 Amazon S3</div>
+                    <div class="component-desc">אחסון קבצים סטטיים<br>React App (HTML/CSS/JS)<br>זמינות גבוהה</div>
+                </div>
+            </div>
+            <div class="arrow">↓</div>
+        </div>
+        
+        <!-- Load Balancer Layer -->
+        <div class="layer">
+            <div class="layer-title">שכבת איזון עומסים</div>
+            <div class="components">
+                <div class="component infrastructure">
+                    <div class="component-title">⚖️ Application Load Balancer</div>
+                    <div class="component-desc">הפצת עומס בין שרתים<br>SSL Termination<br>Health Checks<br>Auto Scaling Groups</div>
+                </div>
+            </div>
+            <div class="arrow">↓</div>
+        </div>
+        
+        <!-- VPC Container -->
+        <div class="vpc-container">
+            <div class="vpc-label">Amazon VPC - רשת פרטית וירטואלית</div>
+            
+            <!-- API Layer -->
+            <div class="layer">
+                <div class="layer-title">שכבת שירותי API</div>
+                <div class="components">
+                    <div class="component api">
+                        <div class="component-title">🏢 .NET Core Web API</div>
+                        <div class="component-desc">EC2 Instance<br>ניהול מוצרים וקטגוריות<br>Entity Framework Core<br>RESTful API<br>Auto Scaling</div>
+                    </div>
+                    <div class="component api">
+                        <div class="component-title">🟢 Node.js API</div>
+                        <div class="component-desc">EC2 Instance<br>ניהול הזמנות<br>Express.js Framework<br>JSON Processing<br>Auto Scaling</div>
+                    </div>
+                </div>
+                <div class="arrow">↓</div>
+            </div>
+            
+            <!-- Database Layer -->
+            <div class="layer">
+                <div class="layer-title">שכבת מסדי נתונים</div>
+                <div class="components">
+                    <div class="component database">
+                        <div class="component-title">🗄️ Amazon RDS</div>
+                        <div class="component-desc">SQL Server Database<br>מוצרים וקטגוריות<br>נתונים מובנים<br>ACID Compliance<br>גיבויים אוטומטיים<br>Multi-AZ Deployment</div>
+                    </div>
+                    <div class="component database">
+                        <div class="component-title">📄 Amazon DocumentDB</div>
+                        <div class="component-desc">NoSQL Database<br>נתוני הזמנות<br>MongoDB Compatible<br>גמישות סכמה<br>ביצועים גבוהים<br>Auto Scaling</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- DevOps & Automation Layer -->
+        <div class="layer">
+            <div class="layer-title">שכבת DevOps ואוטומציה</div>
+            <div class="layer">
+                <div class="components">
+                    <div class="component automation">
+                        <div class="component-title">🚀 AWS CodePipeline</div>
+                        <div class="component-desc">CI/CD Pipeline<br>אוטומציית deployment<br>בדיקות אוטומטיות<br>Build & Deploy</div>
+                    </div>
+                    <div class="component automation">
+                        <div class="component-title">🔧 AWS CodeBuild</div>
+                        <div class="component-desc">Build Service<br>Compilation<br>Unit Tests<br>Docker Images</div>
+                    </div>
+                    <div class="component automation">
+                        <div class="component-title">📋 AWS CloudFormation</div>
+                        <div class="component-desc">Infrastructure as Code<br>ניהול תשתית אוטומטי<br>Version Control<br>Stack Management</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="layer">
+                <div class="components">
+                    <div class="component automation">
+                        <div class="component-title">⚡ AWS Lambda</div>
+                        <div class="component-desc">Serverless Functions<br>Event-driven Processing<br>Auto Scaling<br>Cost Optimization</div>
+                    </div>
+                    <div class="component automation">
+                        <div class="component-title">🔄 Auto Scaling Groups</div>
+                        <div class="component-desc">אוטומציית scaling<br>Health Checks<br>Load-based Scaling<br>Cost Management</div>
+                    </div>
+                    <div class="component automation">
+                        <div class="component-title">🎯 Elastic Container Service</div>
+                        <div class="component-desc">Container Orchestration<br>Docker Management<br>Service Discovery<br>Load Balancing</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Security & Monitoring Layer -->
+        <div class="layer">
+            <div class="layer-title">שכבת אבטחה, ניטור ותצורה</div>
+            <div class="components">
+                <div class="component security">
+                    <div class="component-title">🛡️ Security Groups</div>
+                    <div class="component-desc">חומות אש וירטואליות<br>בקרת תנועה<br>כללי גישה</div>
+                </div>
+                <div class="component security">
+                    <div class="component-title">👨‍💼 AWS IAM</div>
+                    <div class="component-desc">ניהול זהויות והרשאות<br>Roles & Policies<br>גישה מאובטחת<br>MFA Support</div>
+                </div>
+                <div class="component infrastructure">
+                    <div class="component-title">📊 Amazon CloudWatch</div>
+                    <div class="component-desc">ניטור מערכת<br>לוגים ומטריקות<br>התראות אוטומטיות<br>Dashboards</div>
+                </div>
+                <div class="component infrastructure">
+                    <div class="component-title">⚙️ Systems Manager</div>
+                    <div class="component-desc">Parameter Store<br>ניהול תצורות<br>הגדרות מוצפנות<br>Patch Management</div>
+                </div>
+            </div>
+            
+            <div class="components" style="margin-top: 15px;">
+                <div class="component security">
+                    <div class="component-title">🔐 AWS Secrets Manager</div>
+                    <div class="component-desc">ניהול סודות<br>Automatic Rotation<br>Encryption at Rest<br>Fine-grained Access</div>
+                </div>
+                <div class="component security">
+                    <div class="component-title">🔍 AWS GuardDuty</div>
+                    <div class="component-desc">Threat Detection<br>Machine Learning<br>Security Monitoring<br>Automated Response</div>
+                </div>
+                <div class="component infrastructure">
+                    <div class="component-title">📈 X-Ray</div>
+                    <div class="component-desc">Application Tracing<br>Performance Analysis<br>Debugging Tools<br>Service Map</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Data Flow Section -->
+        <div class="flow-section">
+            <div class="flow-title">זרימת נתונים במערכת</div>
+            
+            <div style="margin-bottom: 15px;">
+                <strong>תהליך טעינת מוצרים:</strong>
+                <div class="flow-steps">
+                    <div class="flow-step">משתמש פותח אתר</div>
+                    <div class="flow-step">CloudFront מגיש React</div>
+                    <div class="flow-step">בקשת API למוצרים</div>
+                    <div class="flow-step">שליפה מ-SQL Server</div>
+                    <div class="flow-step">הצגת רשימת מוצרים</div>
+                </div>
+            </div>
+            
+            <div style="margin-bottom: 15px;">
+                <strong>תהליך שליחת הזמנה:</strong>
+                <div class="flow-steps">
+                    <div class="flow-step">בחירת מוצרים</div>
+                    <div class="flow-step">שליחה ל-Node.js API</div>
+                    <div class="flow-step">שמירה ב-DocumentDB</div>
+                    <div class="flow-step">אישור הזמנה</div>
+                    <div class="flow-step">הודעה למשתמש</div>
+                </div>
+            </div>
+            
+            <div>
+                <strong>תהליך CI/CD אוטומטי:</strong>
+                <div class="flow-steps">
+                    <div class="flow-step">Push לגיט</div>
+                    <div class="flow-step">CodePipeline Trigger</div>
+                    <div class="flow-step">CodeBuild - Build & Test</div>
+                    <div class="flow-step">CloudFormation Deploy</div>
+                    <div class="flow-step">Auto Scaling Update</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Enhanced Legend -->
+        <div class="legend">
+            <div class="legend-title">מקרא - סוגי רכיבים</div>
+            <div class="legend-item">
+                <div class="legend-pattern pattern-frontend"></div>
+                <span><strong>Frontend & CDN</strong> - ממשק משתמש והפצת תוכן</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-pattern pattern-api"></div>
+                <span><strong>API Services</strong> - שירותי עסק ולוגיקה</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-pattern pattern-database"></div>
+                <span><strong>Databases</strong> - אחסון נתונים</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-pattern pattern-infrastructure"></div>
+                <span><strong>Infrastructure</strong> - תשתית ועזרים</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-pattern pattern-security"></div>
+                <span><strong>Security & Monitoring</strong> - אבטחה וניטור</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-pattern pattern-automation"></div>
+                <span><strong>DevOps & Automation</strong> - אוטומציה ו-CI/CD</span>
+            </div>
+        </div>
+        
+        <!-- Enhanced Key Points -->
+        <div class="key-points">
+            <h3>מאפייני המערכת:</h3>
+            <ul>
+                <li><strong>הפרדת אחריויות:</strong> כל שירות ממלא תפקיד ספציפי ובלתי תלוי</li>
+                <li><strong>סקיילביליות:</strong> Auto Scaling Groups ו-Load Balancers לגידול אוטומטי</li>
+                <li><strong>אבטחה מתקדמת:</strong> שכבות אבטחה מרובות עם GuardDuty ו-Secrets Manager</li>
+                <li><strong>זמינות גבוהה:</strong> Multi-AZ deployment עם failover אוטומטי</li>
+                <li><strong>אוטומציה מלאה:</strong> CI/CD pipeline עם Infrastructure as Code</li>
+                <li><strong>ניטור מתקדם:</strong> CloudWatch, X-Ray ו-distributed tracing</li>
+                <li><strong>ניהול תצורה:</strong> Parameter Store ו-Systems Manager לניהול אוטומטי</li>
+                <li><strong>חסכון עלויות:</strong> Serverless components ו-Auto Scaling לאופטימיזציה</li>
+            </ul>
+        </div>
+        
+        <!-- DevOps Practices Section -->
+        <div class="key-points">
+            <h3>תהליכי DevOps מתקדמים:</h3>
+            <ul>
+                <li><strong>Infrastructure as Code:</strong> כל התשתית מנוהלת דרך CloudFormation templates</li>
+                <li><strong>Continuous Integration:</strong> בדיקות אוטומטיות עם כל commit</li>
+                <li><strong>Continuous Deployment:</strong> העלאה אוטומטית לסביבות פיתוח ו-production</li>
+                <li><strong>Blue-Green Deployment:</strong> העלאות ללא השבתה באמצעות ALB</li>
+                <li><strong>Automated Testing:</strong> Unit tests, Integration tests ו-Security scans</li>
+                <li><strong>Configuration Management:</strong> ניהול הגדרות דרך Parameter Store</li>
+                <li><strong>Log Aggregation:</strong> ריכוז לוגים ב-CloudWatch עם structured logging</li>
+                <li><strong>Performance Monitoring:</strong> מטריקות real-time ו-alerting אוטומטי</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
