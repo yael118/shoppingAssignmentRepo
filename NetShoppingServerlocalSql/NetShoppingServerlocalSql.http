@@ -1,0 +1,6 @@
+@NetShoppingServerlocalSql_HostAddress = http://localhost:5112
+
+GET {{NetShoppingServerlocalSql_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

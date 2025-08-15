@@ -1,0 +1,20 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/NetShoppingServerlocalSql/bin/Debug/net8.0/runtimes
+/NetShoppingServerlocalSql/.vs/NetShoppingServerlocalSql/config
+/NetShoppingServerlocalSql/.vs/NetShoppingServerlocalSql/copilot-chat/a676a352/sessions
+/NetShoppingServerlocalSql/.vs/NetShoppingServerlocalSql/DesignTimeBuild
+/NetShoppingServerlocalSql/.vs/NetShoppingServerlocalSql/FileContentIndex
+/NetShoppingServerlocalSql/.vs/NetShoppingServerlocalSql/v17
+/NetShoppingServerlocalSql/.vs/ProjectEvaluation
+/NetShoppingServerlocalSql/bin/Debug/net8.0/cs
+/NetShoppingServerlocalSql/bin/Debug/net8.0/de
+/NetShoppingServerlocalSql/bin/Debug/net8.0
+/NetShoppingServerlocalSql/.vs/NetShoppingServerlocalSql/CopilotIndices/17.14.734.62261
+/NetShoppingServerlocalSql/obj
+/NetShoppingServerlocalSql/NetShoppingServerlocalSql.sln
+/NetShoppingServerlocalSql/NetShoppingServerlocalSql.csproj
+/NetShoppingServerlocalSql/NetShoppingServerlocalSql.csproj.user
+/NetShoppingServerlocalSql/appsettings.Development.json
