@@ -18,7 +18,7 @@ const cartSlice = createSlice({
         state.items.push({ ...product, quantity });
       }
       
-      state.total = state.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      state.total = parseFloat(state.items.reduce((sum, item) => sum + (item.price * item.quantity), 0).toFixed(2));
       console.log('Cart state after adding:', state);
     },
     updateQuantity: (state, action) => {
@@ -26,12 +26,12 @@ const cartSlice = createSlice({
       const item = state.items.find(item => item.id === id);
       if (item && quantity > 0) {
         item.quantity = quantity;
-        state.total = state.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        state.total = parseFloat(state.items.reduce((sum, item) => sum + (item.price * item.quantity), 0).toFixed(2));
       }
     },
     removeFromCart: (state, action) => {
       state.items = state.items.filter(item => item.id !== action.payload);
-      state.total = state.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      state.total = parseFloat(state.items.reduce((sum, item) => sum + (item.price * item.quantity), 0).toFixed(2));
     },
     clearCart: (state) => {
       state.items = [];

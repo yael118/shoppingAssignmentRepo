@@ -98,10 +98,10 @@ const ShoppingList = () => {
         <h2>עגלת הקניות</h2>
         {cart && cart.items ? cart.items.map(item => (
           <div key={item.id} className="cart-item">
-            {item.name} - כמות: {item.quantity} - ₪{item.price * item.quantity}
+            {item.name} - כמות: {item.quantity} - ₪{(item.price * item.quantity).toFixed(2)}
           </div>
         )) : <div>הסל ריק</div>}
-        <div className="total">סה"כ: ₪{cart ? cart.total : 0}</div>
+        <div className="total">סה"כ: ₪{cart ? cart.total.toFixed(2) : '0.00'}</div>
         {cart && cart.items && cart.items.length > 0 && (
           <button onClick={() => navigate('/order-summary')}>
             המשך להזמנה
