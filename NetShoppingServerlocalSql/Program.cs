@@ -23,9 +23,18 @@ builder.Services.AddCors(options =>
               .AllowAnyMethod();
     });
 });
+// הגדרת CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowReactDev",
+        policy => policy.WithOrigins("http://localhost:3000")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+     .AllowCredentials()); 
+});
 
 var app = builder.Build();
-
+app.UseCors("AllowReactDev");
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

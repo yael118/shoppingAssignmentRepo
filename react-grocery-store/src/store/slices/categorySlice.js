@@ -3,10 +3,15 @@ import axios from 'axios';
 
 const API_BASE_URL = 'https://localhost:7001/api';
 
+const api = axios.create({
+  baseURL: API_BASE_URL,
+  withCredentials: true,
+
+});
 export const fetchCategories = createAsyncThunk(
   'categories/fetchCategories',
   async () => {
-    const response = await axios.get(`${API_BASE_URL}/categories`);
+    const response = await api.get(`/categories`);
     return response.data;
   }
 );
